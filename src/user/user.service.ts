@@ -26,19 +26,49 @@ export class UserService {
     id: number,
     { email, birthAt, name, password }: UpdatePutUserDto,
   ) {
+    const data: any = {};
+
+    if (email) {
+      data.email = email;
+    }
+    if (birthAt) {
+      data.birthAt = new Date(birthAt);
+    }
+    if (name) {
+      data.name = name;
+    }
+    if (password) {
+      data.password = password;
+    }
     return this.prisma.user.update({
       where: { id },
-      data: {
-        email,
-        birthAt: birthAt ? new Date(birthAt) : null,
-        name,
-        password,
-      },
+      data,
     });
   }
 
-  async updateFromUser(id: number, data: UpdatePatchUserDto) {
-    data.birthAt = data.birthAt ? new Date(data.birthAt).toString() : null;
-    return this.prisma.user.update({ where: { id }, data });
+  async updateFromUser(
+    id: number,
+    { email, birthAt, name, password }: UpdatePatchUserDto,
+  ) {
+    const data: any = {};
+
+    if (email) {
+      data.email = email;
+    }
+    if (birthAt) {
+      data.birthAt = new Date(birthAt);
+    }
+    if (name) {
+      data.name = name;
+    }
+    if (password) {
+      data.password = password;
+    }
+
+    return this.prisma.user.update({ where: { id }, data: data });
+  }
+
+  async deleteUser(id: number) {
+    return this.prisma.user.delete({ where: { id } });
   }
 }

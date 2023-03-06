@@ -8,12 +8,15 @@ import {
   Delete,
   Put,
   ParseIntPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePutUserDto } from './dto/update-put-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
+import { LogInterceptor } from 'src/interceptors/log.interceptor';
 
+@UseInterceptors(LogInterceptor)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -42,7 +45,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  updatePartial(
+  async updatePartial(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdatePatchUserDto,
   ) {
@@ -50,7 +53,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: string) {
-    return { id };
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.deleteUser(id);
   }
 }
